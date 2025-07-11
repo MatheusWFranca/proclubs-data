@@ -1,1 +1,40 @@
+name: get-data-from-ea
 
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:  
+
+permissions:
+  contents: write
+jobs:
+  get-data-from-ea:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Credenciais repo
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        persist-credentials: true
+      
+    - name: Instalar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.13.2'
+        
+    - name: Instalar dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Rodar script
+      run: python main.py
+      
+    - name: Commit
+      run: |
+        git config --local user.email ${{ secrets.EMAIL }}
+        git config --local user.name ${{ secrets.ACCOUNT_NAME }}
+        git add .
+        git commit -m "$(TZ='America/Sao_Paulo' date '+%d/%m/%Y %H:%M')" || exit 0
+        git push
