@@ -1,10 +1,10 @@
 import requests
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 
 club_id = 4606176
 
-now = datetime.now().strftime('%Y%m%d')
+now = (datetime.now() - timedelta(hours=3)).strftime('%Y%m%d')
 
 base_url = 'https://proclubs.ea.com/api/fc'
 
